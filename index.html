@@ -219,7 +219,7 @@ const reports = {
       { id: "hasDMS", label: "Has Valid DMS? (yes/no)", placeholder:"yes or no" },
       { id: "permissionName", label: "Permission Given By (if no DMS)", placeholder:"Enter name if no DMS" }
     ],
-    template:(d,date)=>{let t=d.hasDMS.toLowerCase()==="yes"?"with valid DMS":`without valid DMS with the permission of ${d.permissionName}`;return `Date :- ${date}
+    template:(d,date,time)=>{let t=d.hasDMS.toLowerCase()==="yes"?"with valid DMS":`without valid DMS with the permission of ${d.permissionName}`;return `Date :- ${date}   Time :- ${time}
 Location :- ${d.location}
 Subject :- Vehicle Access
 
@@ -251,9 +251,9 @@ ${d.radioCall}`;}
       {id:"hasPTW",label:"Has Valid PTW? (yes/no)", placeholder:"yes or no"},
       {id:"permissionName",label:"Permission Given By (if no PTW)", placeholder:"Enter name if no PTW"}
     ],
-    template:(d,date)=>{let t=d.hasPTW.toLowerCase()==="yes"?"with a valid work permit (PTW)":`without a valid PTW with the permission of ${d.permissionName}`;return`FYI
+    template:(d,date,time)=>{let t=d.hasPTW.toLowerCase()==="yes"?"with a valid work permit (PTW)":`without a valid PTW with the permission of ${d.permissionName}`;return`FYI
 
-Date: ${date}
+Date: ${date}   Time: ${time}
 Location: ${d.location}
 Subject: ${d.activityType}
 
@@ -285,11 +285,11 @@ ${d.radioCall}`;}
       {id:"remarks",label:"Remarks", placeholder:"Enter remarks"},
       {id:"radioCall",label:"Radio Call Sign", placeholder:"Enter radio call sign"}
     ],
-    template:(d,date)=>`*FIRE ALARM REPORT 🚨*
+    template:(d,date,time)=>`*FIRE ALARM REPORT 🚨*
 
 FYI Team
 
-Date: ${date}
+Date: ${date}   Time: ${time}
 Location: ${d.location}
 
 ACTIVATED TIME: ${d.activatedTime}
@@ -351,7 +351,8 @@ generateBtn.addEventListener("click",function(){
   r.fields.forEach(f=>{const el=document.getElementById(f.id);data[f.id]=el.value||"";});
   const today=new Date();
   const date=today.toLocaleDateString('en-GB');
-  output.value=r.template(data,date).trim();
+  const time=today.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  output.value=r.template(data,date,time).trim();
 });
 
 copyBtn.addEventListener("click",function(){

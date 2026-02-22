@@ -3,80 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Security Reporting Format</title>
+<title>Security Reporting Tool</title>
 <style>
-/* --- Global Styles --- */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
-body {
-    min-height: 100vh;
+body{
+    font-family: 'Roboto', sans-serif;
     background: url('background.jpg') no-repeat center center fixed;
     background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px;
+    color:white;
+    padding:20px;
+    animation: fadein 1s;
 }
-.container {
-    width: 100%;
-    max-width: 1000px;
-    background: rgba(0,0,0,0.7);
-    padding: 30px;
-    border-radius: 15px;
-    color: #fff;
-    box-shadow: 0 0 20px rgba(0,0,0,0.8);
-    animation: fadeIn 1s ease;
+@keyframes fadein {
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
-h1 { text-align: center; margin-bottom: 20px; color: #ffd700; text-shadow: 1px 1px 4px #000; }
-select, input, textarea, button {
-    width: 100%;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: none;
-    font-size: 16px;
+.container{
+    max-width:1000px;
+    margin:auto;
+    background:rgba(0,0,0,0.75);
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(0,0,0,0.5);
 }
-select { cursor: pointer; }
-input, textarea { outline: none; }
-textarea { min-height: 150px; resize: vertical; }
-button { 
-    background: #ff4500; 
-    color: #fff; 
-    font-weight: bold; 
-    cursor: pointer;
-    transition: 0.3s;
+h1{text-align:center;color:#ffd700;margin-bottom:20px;text-shadow:1px 1px 2px black;}
+select,input,textarea,button{
+    width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:none;font-size:16px;
 }
-button:hover { background: #ffa500; transform: scale(1.05); }
-.report-output {
-    background: rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 10px;
-    min-height: 200px;
-    white-space: pre-line;
-    overflow-y: auto;
+textarea{resize:vertical;min-height:120px;}
+button{
+    background:#ff4500;color:white;font-weight:bold;cursor:pointer;transition:0.3s;
 }
-.disclaimer {
-    margin-top: 20px;
-    padding: 15px;
-    border-left: 5px solid #ff0000;
-    background: rgba(255,0,0,0.1);
-    font-weight: bold;
-    color: #fff;
+button:hover{background:#ffa500;}
+.report-output{
+    background:rgba(255,255,255,0.1);
+    padding:20px;
+    border-radius:10px;
+    min-height:200px;
+    white-space:pre-line;
+    margin-top:20px;
+    animation: slidein 0.5s;
 }
-.contact-btn {
-    margin-top: 10px;
-    background: #00bfff;
+@keyframes slidein {
+    from {opacity:0;transform:translateY(20px);}
+    to {opacity:1;transform:translateY(0);}
 }
-.contact-btn:hover { background: #1e90ff; }
-
-/* Animations */
-@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-.field-container { margin-bottom: 15px; }
-.field-container label { font-weight: 500; margin-bottom: 5px; display: block; }
-.field-container input, .field-container select, .field-container textarea { transition: 0.3s; }
-.field-container input:focus, .field-container select:focus, .field-container textarea:focus { box-shadow: 0 0 8px #ffa500; }
-
+.disclaimer{
+    margin-top:20px;padding:15px;border-left:5px solid #ff0000;background:rgba(255,0,0,0.1);
+    font-weight:bold;color:white;
+}
+.contact-btn{
+    margin-top:10px;
+    background:#00bfff;
+}
+.contact-btn:hover{background:#1e90ff;}
+.field-container{margin-bottom:15px;}
+.field-container label{display:block;font-weight:500;margin-bottom:5px;}
 </style>
 </head>
 <body>
@@ -84,7 +65,7 @@ button:hover { background: #ffa500; transform: scale(1.05); }
 <h1>Security Reporting Format</h1>
 
 <div class="field-container">
-<label for="reportType">Select Report Type</label>
+<label>Select Report Type</label>
 <select id="reportType">
 <option value="">--Choose Report Type--</option>
 <option value="vehicle">Vehicle Entry Report</option>
@@ -98,37 +79,34 @@ button:hover { background: #ffa500; transform: scale(1.05); }
 </div>
 
 <div id="dynamicFields"></div>
-
 <button id="generateBtn">Generate Report</button>
-
 <div class="report-output" id="reportOutput"></div>
 
 <div class="disclaimer">
 ⚠️ This tool is fully offline, built with HTML, CSS, and JavaScript, and does not store any data.
 </div>
-
 <button class="contact-btn" onclick="window.location.href='mailto:arslankhan807567@gmail.com'">Contact Developer</button>
 </div>
 
 <script>
 // --- Utility Functions ---
-function normalizeTon(input) {
-    if (!input) return 0;
-    let str = input.toString().toLowerCase().replace(/[^0-9]/g, '');
-    return parseInt(str) || 0;
+function normalizeTon(input){
+    if(!input) return 0;
+    let str = input.toString().toLowerCase().replace(/[^0-9]/g,'');
+    return parseInt(str)||0;
 }
-function normalizeYesNo(input) {
-    if (!input) return false;
+function normalizeYesNo(input){
+    if(!input) return false;
     input = input.toString().toLowerCase();
     return (['yes','y','true','valid'].includes(input));
 }
-function autoCapitalize(str) {
-    if (!str) return '';
+function autoCapitalize(str){
+    if(!str) return '';
     return str.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
 }
-function fixTypos(str) {
-    if (!str) return '';
-    let corrections = {
+function fixTypos(str){
+    if(!str) return '';
+    const corrections = {
         'drver':'Driver',
         'contrctor':'Contractor',
         'comapny':'Company',
@@ -138,128 +116,125 @@ function fixTypos(str) {
         'dms':'DMS',
         'veihcle':'Vehicle'
     };
-    for (let key in corrections) {
+    for(let key in corrections){
         let regex = new RegExp(key,'gi');
-        str = str.replace(regex, corrections[key]);
+        str = str.replace(regex,corrections[key]);
     }
     return str;
 }
 
 // --- Dynamic Field Rendering ---
-const reportFields = {
-    vehicle: [
-        {id:'location',label:'Location',placeholder:'Type exact location'},
-        {id:'purpose',label:'Purpose of Entrance',placeholder:'Type purpose (material collection, delivery etc.)'},
-        {id:'destination',label:'Vehicle Destination',placeholder:'Where is the vehicle heading?'},
-        {id:'vehicleNumber',label:'Vehicle Number',placeholder:'Enter VRN'},
-        {id:'vehicleType',label:'Vehicle Type & Weight (e.g., 10 ton)',placeholder:'Type vehicle type and weight'},
-        {id:'driverName',label:'Driver Name',placeholder:'Driver full name'},
-        {id:'driverContact',label:'Driver Contact',placeholder:'Driver phone number'},
-        {id:'company',label:'Company Name',placeholder:'Contractor/Company name'},
-        {id:'inCharge',label:'In-Charge Name',placeholder:'Person in charge'},
-        {id:'inChargeContact',label:'In-Charge Contact',placeholder:'Phone number'},
-        {id:'dmsValid',label:'DMS Valid? (Yes/No)',placeholder:'Yes or No'},
-        {id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-152'}
-    ],
-    contractor: [
-        {id:'location',label:'Location',placeholder:'Type exact location'},
-        {id:'contractorName',label:'Contractor Name',placeholder:'Enter contractor name'},
-        {id:'company',label:'Company Name',placeholder:'Company name'},
-        {id:'inCharge',label:'In-Charge Name',placeholder:'Person in charge'},
-        {id:'inChargeContact',label:'In-Charge Contact',placeholder:'Phone number'},
-        {id:'activity',label:'Activity Description',placeholder:'Type activity'},
-        {id:'ptwValid',label:'PTW Valid? (Yes/No)',placeholder:'Yes or No'},
-        {id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-122'}
-    ],
-    fire: [
-        {id:'location',label:'Location',placeholder:'Exact location of alarm'},
-        {id:'activatedTime',label:'Activated Time',placeholder:'HH:MM:SS'},
-        {id:'ackTime',label:'Acknowledged Time',placeholder:'HH:MM:SS'},
-        {id:'silenceTime',label:'Silence Time',placeholder:'HH:MM:SS'},
-        {id:'resetTime',label:'Reset Time',placeholder:'HH:MM:SS'},
-        {id:'fireLocation',label:'Fire Alarm Location',placeholder:'Fire alarm sensor ID / location'},
-        {id:'nature',label:'Nature of Fire Alarm',placeholder:'e.g., False Alarm, Smoke'},
-        {id:'cause',label:'Cause of Fire Alarm',placeholder:'e.g., Dust, Malfunction'},
-        {id:'responderName',label:'Responder Name',placeholder:'Enter name'},
-        {id:'responderContact',label:'Responder Contact',placeholder:'Phone number'},
-        {id:'arrivalTime',label:'Responder Arrival Time',placeholder:'HH:MM:SS'},
-        {id:'remarks',label:'Remarks',placeholder:'e.g., Situation back to normal'},
-        {id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-111'}
-    ],
-    cleaning: [
-        {id:'requestorName',label:'Requestor Name',placeholder:'Full Name'},
-        {id:'requestorEmail',label:'Requestor Email',placeholder:'Email address'},
-        {id:'requestorContact',label:'Requestor Contact',placeholder:'Phone number'},
-        {id:'pocName',label:'Point of Contact Name',placeholder:'POC name'},
-        {id:'pocContact',label:'POC Contact',placeholder:'POC phone'},
-        {id:'details',label:'Details of Request',placeholder:'Explain the issue clearly'},
-        {id:'location',label:'Exact Location',placeholder:'e.g., Zabeel Avenue near Ten 11 Cafe'},
-        {id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-11'}
-    ],
-    tenant: [
-        {id:'date',label:'Date',placeholder:'DD/MM/YYYY'},
-        {id:'duration',label:'Duration',placeholder:'HH:MM to HH:MM'},
-        {id:'contractors',label:'Contractors',placeholder:'Number'},
-        {id:'visitors',label:'Visitors',placeholder:'Number'},
-        {id:'hkStaff',label:'HK Staff',placeholder:'Number'},
-        {id:'fmStaff',label:'FM Staff',placeholder:'Number'},
-        {id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., OA-05'}
-    ],
-    generalHeadcount: [
-        {id:'location',label:'Location',placeholder:'Exact location'},
-        {id:'date',label:'Date',placeholder:'DD/MM/YYYY'},
-        {id:'time',label:'Time',placeholder:'HH:MM to HH:MM'},
-        {id:'totalHC',label:'Total Headcount',placeholder:'Total number'}
-    ],
-    patrolling: [
-        {id:'location',label:'Location',placeholder:'Exact location'},
-        {id:'time',label:'Time',placeholder:'HH:MM'},
-        {id:'observations',label:'Observations',placeholder:'List observations clearly'},
-        {id:'contractorActivity',label:'Contractor Activity? (Yes/No)',placeholder:'Yes or No'},
-        {id:'visitorMovement',label:'Visitor Movement? (Yes/No)',placeholder:'Yes or No'},
-        {id:'suspiciousActivity',label:'Suspicious Activity? (Yes/No)',placeholder:'Yes or No'},
-        {id:'lostFound',label:'Lost/Found Items?',placeholder:'Yes or No'},
-        {id:'propertyDamage',label:'Property Damage?',placeholder:'Yes or No'},
-        {id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-122'}
-    ]
+const reportFields={
+vehicle:[
+{id:'location',label:'Location',placeholder:'Type exact location'},
+{id:'purpose',label:'Purpose of Entrance',placeholder:'e.g., Material Collection'},
+{id:'destination',label:'Vehicle Destination',placeholder:'Where is the vehicle heading?'},
+{id:'vehicleNumber',label:'Vehicle Number',placeholder:'Enter VRN'},
+{id:'vehicleType',label:'Vehicle Type & Weight (e.g., 10 ton)',placeholder:'Type vehicle type and weight'},
+{id:'driverName',label:'Driver Name',placeholder:'Full name'},
+{id:'driverContact',label:'Driver Contact',placeholder:'Phone number'},
+{id:'company',label:'Company Name',placeholder:'Contractor/Company name'},
+{id:'inCharge',label:'In-Charge Name',placeholder:'Person in charge'},
+{id:'inChargeContact',label:'In-Charge Contact',placeholder:'Phone number'},
+{id:'dmsValid',label:'DMS Valid? (Yes/No)',placeholder:'Yes or No'},
+{id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-152'}
+],
+contractor:[
+{id:'location',label:'Location',placeholder:'Type exact location'},
+{id:'contractorName',label:'Contractor Name',placeholder:'Enter contractor name'},
+{id:'company',label:'Company Name',placeholder:'Company name'},
+{id:'inCharge',label:'In-Charge Name',placeholder:'Person in charge'},
+{id:'inChargeContact',label:'In-Charge Contact',placeholder:'Phone number'},
+{id:'activity',label:'Activity Description',placeholder:'Type activity'},
+{id:'ptwValid',label:'PTW Valid? (Yes/No)',placeholder:'Yes or No'},
+{id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-122'}
+],
+fire:[
+{id:'location',label:'Location',placeholder:'Exact location of alarm'},
+{id:'activatedTime',label:'Activated Time',placeholder:'HH:MM:SS'},
+{id:'ackTime',label:'Acknowledged Time',placeholder:'HH:MM:SS'},
+{id:'silenceTime',label:'Silence Time',placeholder:'HH:MM:SS'},
+{id:'resetTime',label:'Reset Time',placeholder:'HH:MM:SS'},
+{id:'fireLocation',label:'Fire Alarm Location',placeholder:'Sensor ID / location'},
+{id:'nature',label:'Nature of Fire Alarm',placeholder:'False Alarm / Smoke / Fire'},
+{id:'cause',label:'Cause of Fire Alarm',placeholder:'e.g., Dust, Malfunction'},
+{id:'responderName',label:'Responder Name',placeholder:'Enter name'},
+{id:'responderContact',label:'Responder Contact',placeholder:'Phone number'},
+{id:'arrivalTime',label:'Responder Arrival Time',placeholder:'HH:MM:SS'},
+{id:'remarks',label:'Remarks',placeholder:'e.g., Situation back to normal'},
+{id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-111'}
+],
+cleaning:[
+{id:'requestorName',label:'Requestor Name',placeholder:'Full Name'},
+{id:'requestorEmail',label:'Requestor Email',placeholder:'Email address'},
+{id:'requestorContact',label:'Requestor Contact',placeholder:'Phone number'},
+{id:'pocName',label:'Point of Contact Name',placeholder:'POC name'},
+{id:'pocContact',label:'POC Contact',placeholder:'POC phone'},
+{id:'details',label:'Details of Request',placeholder:'Explain the issue clearly'},
+{id:'location',label:'Exact Location',placeholder:'Location'},
+{id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-11'}
+],
+tenant:[
+{id:'location',label:'Location',placeholder:'Sector / Area'},
+{id:'date',label:'Date',placeholder:'DD/MM/YYYY'},
+{id:'duration',label:'Duration',placeholder:'HH:MM to HH:MM'},
+{id:'contractors',label:'Contractors',placeholder:'Number of contractors'},
+{id:'visitors',label:'Visitors',placeholder:'Number of visitors'},
+{id:'hkStaff',label:'HK Staff',placeholder:'Number of housekeeping staff'},
+{id:'fmStaff',label:'FM Staff',placeholder:'Number of FM staff'},
+{id:'total',label:'Total HC',placeholder:'Total headcount'},
+{id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., OA-05'}
+],
+generalHeadcount:[
+{id:'location',label:'Location',placeholder:'Exact location'},
+{id:'date',label:'Date',placeholder:'DD/MM/YYYY'},
+{id:'time',label:'Time',placeholder:'HH:MM to HH:MM'},
+{id:'total',label:'Total HC',placeholder:'Total headcount'},
+{id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-122'}
+],
+patrolling:[
+{id:'location',label:'Location',placeholder:'Exact location'},
+{id:'date',label:'Date',placeholder:'DD/MM/YYYY'},
+{id:'time',label:'Time',placeholder:'HH:MM'},
+{id:'observations',label:'Observations / Description',placeholder:'Type all observations here'},
+{id:'radioCall',label:'Radio Call Sign',placeholder:'e.g., S-122'}
+]
 };
 
-const dynamicFieldsDiv = document.getElementById('dynamicFields');
-document.getElementById('reportType').addEventListener('change', function() {
-    dynamicFieldsDiv.innerHTML = '';
-    const type = this.value;
-    if (!type) return;
-    reportFields[type].forEach(field => {
-        const container = document.createElement('div');
-        container.className = 'field-container';
-        container.innerHTML = `<label for="${field.id}">${field.label}</label>
-        <input type="text" id="${field.id}" placeholder="${field.placeholder}">`;
-        dynamicFieldsDiv.appendChild(container);
-    });
+// --- Render slots dynamically ---
+const dynamicFieldsDiv=document.getElementById('dynamicFields');
+document.getElementById('reportType').addEventListener('change',function(){
+dynamicFieldsDiv.innerHTML='';
+const type=this.value;
+if(!type) return;
+reportFields[type].forEach(field=>{
+    const div=document.createElement('div');
+    div.className='field-container';
+    div.innerHTML=`<label for="${field.id}">${field.label}</label>
+    <input type="text" id="${field.id}" placeholder="${field.placeholder}">`;
+    dynamicFieldsDiv.appendChild(div);
+});
 });
 
-// --- Report Generation Logic ---
-document.getElementById('generateBtn').addEventListener('click', function() {
-    const type = document.getElementById('reportType').value;
-    if (!type) { alert('Please select report type'); return; }
-    const fields = reportFields[type];
-    let data = {};
-    fields.forEach(f => {
-        data[f.id] = document.getElementById(f.id)?.value.trim();
-    });
+// --- Generate report ---
+document.getElementById('generateBtn').addEventListener('click',function(){
+const type=document.getElementById('reportType').value;
+if(!type){alert('Please select report type');return;}
+let data={};
+reportFields[type].forEach(f=>{
+    data[f.id]=document.getElementById(f.id)?.value.trim();
+});
+const now=new Date();
+const dateStr=now.toLocaleDateString('en-GB');
+const timeStr=now.toLocaleTimeString('en-GB');
+let reportText='';
 
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('en-GB');
-    const timeStr = now.toLocaleTimeString('en-GB');
-
-    let reportText = '';
-
-    // --- Vehicle Report ---
-    if (type === 'vehicle') {
-        const weight = normalizeTon(data.vehicleType);
-        const tireProtection = (weight >= 3) ? 'using tire protection as well' : '';
-        const dmsStatus = normalizeYesNo(data.dmsValid) ? 'with valid DMS' : `without valid DMS (Permission by ${data.radioCall})`;
-        reportText = `Date :- ${dateStr}   Time :- ${timeStr}
+// --- VEHICLE ---
+if(type==='vehicle'){
+    const weight=normalizeTon(data.vehicleType);
+    const tireProtection=(weight>=3)?'using tire protection as well':'';
+    const dmsStatus=normalizeYesNo(data.dmsValid)?'with valid DMS':`without valid DMS (Permission by ${data.radioCall})`;
+    reportText=`Date :- ${dateStr}   Time :- ${timeStr}
 Location :- ${autoCapitalize(fixTypos(data.location))}
 Subject :- Vehicle Access
 
@@ -277,13 +252,13 @@ In-Charge Contact :- ${data.inChargeContact}
 
 Regards.
 ${data.radioCall || ''}`;
-    }
+}
 
-    // --- Contractor Report ---
-    else if (type === 'contractor') {
-        const ptwStatus = normalizeYesNo(data.ptwValid);
-        const ptwText = ptwStatus ? 'The activity is with a valid work permit (PTW).' : `Contractors are working without a valid PTW with permission of ${data.radioCall}`;
-        reportText = `FYI
+// --- CONTRACTOR ---
+else if(type==='contractor'){
+    const ptwStatus=normalizeYesNo(data.ptwValid);
+    const ptwText=ptwStatus?'The activity is with a valid work permit (PTW).':`Contractors are working without a valid PTW with permission of ${data.radioCall}`;
+    reportText=`FYI
 
 Date: ${dateStr}   Time: ${timeStr}
 Location: ${autoCapitalize(fixTypos(data.location))}
@@ -300,41 +275,38 @@ Company: ${autoCapitalize(fixTypos(data.company))}
 
 Regards,
 ${data.radioCall || ''}`;
-    }
+}
 
-    // --- Fire Alarm ---
-    else if (type === 'fire') {
-        reportText = `*FIRE ALARM REPORT 🚨*
+// --- FIRE ---
+else if(type==='fire'){
+    reportText=`*FIRE ALARM REPORT 🚨*
 
 FYI Team
 
-Date:  ${dateStr}   Time: ${timeStr}
-Location: ${autoCapitalize(fixTypos(data.location))}
-ACTIVATED TIME: ${data.activatedTime || ''}
-ACK TIME: ${data.ackTime || ''}
-SILENCE TIME:  ${data.silenceTime || ''}
-RESETED TIME:  ${data.resetTime || ''}
+Date: ${dateStr}   Location: ${autoCapitalize(fixTypos(data.location))}
+ACTIVATED TIME: ${data.activatedTime || timeStr}
+ACK TIME: ${data.ackTime || timeStr}
+SILENCE TIME: ${data.silenceTime || timeStr}
+RESETED TIME: ${data.resetTime || timeStr}
 
-Fire Alarm Location: ${fixTypos(data.fireLocation)}
-
-Nature of Fire Alarm: ${fixTypos(data.nature)}
-
-Cause of Fire Alarm: ${fixTypos(data.cause)}
+Fire Alarm Location: ${autoCapitalize(fixTypos(data.fireLocation))}
+Nature of Fire Alarm: ${data.nature || 'False Alarm'}
+Cause of Fire Alarm: ${data.cause || 'Unknown'}
 
 RESPONDER DETAILS:-
 Name: ${autoCapitalize(fixTypos(data.responderName))}
 Contact: ${data.responderContact}
-Arrival Time: ${data.arrivalTime}
+Arrival Time: ${data.arrivalTime || timeStr}
 
-Remarks: ${fixTypos(data.remarks)}
+Remarks: ${data.remarks || 'Situation back to normal'}
 
 Regards
 ${data.radioCall || ''}`;
-    }
+}
 
-    // --- Cleaning/Request ---
-    else if (type === 'cleaning') {
-        reportText = `Requestor Name : ${autoCapitalize(fixTypos(data.requestorName))}
+// --- CLEANING / REQUEST ---
+else if(type==='cleaning'){
+    reportText=`Requestor Name : ${autoCapitalize(fixTypos(data.requestorName))}
 Requestor Email Address : ${data.requestorEmail}
 Requestor Contact : ${data.requestorContact}
 
@@ -347,67 +319,58 @@ Exact location of request : ${autoCapitalize(fixTypos(data.location))}
 
 Regards
 ${data.radioCall || ''}`;
-    }
+}
 
-    // --- Tenant Headcount ---
-    else if (type === 'tenant') {
-        const totalHC = Number(data.contractors || 0) + Number(data.visitors || 0) + Number(data.hkStaff || 0) + Number(data.fmStaff || 0);
-        reportText = `*Hourly Visitors Headcount ${data.radioCall || ''}*
+// --- TENANT HEADCOUNT ---
+else if(type==='tenant'){
+    reportText=`*Hourly Visitors Headcount*
 
 Date: ${data.date || dateStr}
-Duration: ${data.duration || ''}
+Duration: ${data.duration || 'Unknown'}
+
 Contractors: ${data.contractors || '0'}
 Visitors: ${data.visitors || '0'}
 HK Staff: ${data.hkStaff || '0'}
 FM Staff: ${data.fmStaff || '0'}
 
-Total HC: ${totalHC}
+Total HC: ${data.total || '0'}
 
-Regards:
+Regards
 ${data.radioCall || ''}`;
-    }
+}
 
-    // --- General Headcount ---
-    else if (type === 'generalHeadcount') {
-        reportText = `Hourly Visitors Headcount Report
+// --- GENERAL HEADCOUNT ---
+else if(type==='generalHeadcount'){
+    reportText=`Hourly Visitors Headcount Report
 
 Location : ${autoCapitalize(fixTypos(data.location))}
 Date : ${data.date || dateStr}
-Time : ${data.time || ''}
-Total HC : ${data.totalHC || '0'}
+Time : ${data.time || 'Unknown'}
+Total HC : ${data.total || '0'}
 
 Regards,
 ${data.radioCall || ''}`;
-    }
+}
 
-    // --- Patrolling ---
-    else if (type === 'patrolling') {
-        const contractorText = normalizeYesNo(data.contractorActivity) ? 'Contractor activity observed.' : 'No contractor activity was observed.';
-        const visitorText = normalizeYesNo(data.visitorMovement) ? 'Visitor movement observed.' : 'No visitor movement was noted.';
-        const suspiciousText = normalizeYesNo(data.suspiciousActivity) ? 'Suspicious activity observed.' : 'No suspicious activity was observed.';
-        const lostFoundText = normalizeYesNo(data.lostFound) ? 'Lost/Found items reported.' : 'No lost or found items reported.';
-        const damageText = normalizeYesNo(data.propertyDamage) ? 'Property damage observed.' : 'No property damage was identified.';
+// --- PATROLLING ---
+else if(type==='patrolling'){
+    reportText=`FYI
 
-        reportText = `FYI
-
-Date: ${dateStr}   Time: ${timeStr}
+Date: ${data.date || dateStr}
+Time: ${data.time || timeStr}
 Location: ${autoCapitalize(fixTypos(data.location))}
 
 Subject: Initial Patrolling Report
 
 Description:
-
-The SOD conducted the initial patrol and inspected the area. Observations:
-
-${contractorText}
-${visitorText}
-${suspiciousText}
-${lostFoundText}
-${damageText}
-
-Additional Observations:
 ${fixTypos(data.observations)}
 
 Regards,
 ${data.radioCall || ''}`;
-    }
+}
+
+document.getElementById('reportOutput').textContent=reportText;
+});
+</script>
+</body>
+</html>

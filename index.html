@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Reporting Format</title>
+<style>
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@600&display=swap');
+
+/* Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+/* Fullscreen Background Image */
+body {
+    background: url('background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+}
+
+/* Overlay for readability */
+body::before {
+    content: "";
+    position: absolute;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.6);
+    z-index:0;
+}
+
+/* Container */
+.container {
+    position: relative;
+    z-index:1;
+    max-width: 1000px;
+    margin: 40px auto;
+    background: rgba(0,0,0,0.75);
+    border-radius: 12px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    overflow: hidden;
+    padding: 20px 30px;
+    animation: fadeIn 1s ease;
+}
+
+/* Header */
+.header h1 {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #FFD700;
+    text-shadow: 1px 1px 5px #000;
+    animation: slideDown 1s ease;
+}
+
+/* Report Type Selector */
+label, select {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #fff;
+}
+select {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #333;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+select:hover { background: #444; }
+select:focus { outline: 2px solid #FFD700; }
+
+/* Form Fields */
+.form-section input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+    background: #f0f0f0;
+    transition: 0.3s ease;
+}
+.form-section input::placeholder {
+    color: #666;
+    font-style: italic;
+}
+
+/* Buttons */
+button {
+    background: #FFD700;
+    color: #000;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    font-size: 16px;
+    transition: 0.3s ease;
+    margin-bottom: 20px;
+}
+button:hover { background: #FFC107; }
+
+/* Output textarea */
+textarea {
+    width: 100%;
+    height: 300px;
+    resize: vertical;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: #000;
+    background: #f9f9f9;
+    transition: 0.3s ease;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+}
+
+/* Footer / Disclaimer */
+.footer {
+    text-align: center;
+    margin-top: 20px;
+}
+.footer p {
+    background: #B71C1C;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+.contact-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 25px;
+    background: #1E88E5;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+.contact-btn:hover { background: #1565C0; }
+
+/* Animations */
+@keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+@keyframes slideDown { from {opacity:0; transform:translateY(-20px);} to {opacity:1; transform:translateY(0);} }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Security Reporting Format</h1>
+    </div>
+
+    <div class="form-section">
+        <label>Select Report Type</label>
+        <select id="reportType">
+            <option value="">-- Select --</option>
+            <option value="vehicleEntry">Vehicle Entry Report</option>
+            <option value="contractorActivity">Contractor Activity Report</option>
+            <option value="fireAlarm">Fire Alarm Report</option>
+            <option value="serviceRequest">Service / Assistance Request Report</option>
+            <option value="headcountDetailed">Hourly Visitors Headcount (Detailed)</option>
+            <option value="headcountGeneral">Hourly Visitors Headcount (General)</option>
+            <option value="patrolling">Patrolling Report</option>
+        </select>
+
+        <div id="formArea"></div>
+        <button id="generateBtn" style="display:none;">Generate Report</button>
+    </div>
+
+    <div class="output-section">
+        <h3>Generated Report</h3>
+        <textarea id="output" placeholder="Your report will appear here..."></textarea>
+        <button id="copyBtn">Copy Report</button>
+    </div>
+
+    <div class="footer">
+        <p>⚠️ Disclaimer: This tool is built using HTML, CSS & JavaScript. It does not store or transmit any data. ⚠️</p>
+        <a href="mailto:arslankhan807567@gmail.com" class="contact-btn">Contact Developer</a>
+    </div>
+
+</div>
+
+<script>
+/* ==== Reports Data ==== */
+const reports = {
+  vehicleEntry: {
+    fields: [
+      { id: "location", label: "Location", placeholder:"Type exact location" },
+      { id: "purpose", label: "Purpose of Delivery", placeholder:"e.g., Construction Material Delivery" },
+      { id: "company", label: "Company Name", placeholder:"Enter company name" },
+      { id: "driverName", label: "Driver Name", placeholder:"Enter driver name" },
+      { id: "driverContact", label: "Driver Contact", placeholder:"Enter mobile number" },
+      { id: "vrn", label: "Vehicle VRN", placeholder:"Enter vehicle registration number" },
+      { id: "vehicleType", label: "Vehicle Type", placeholder:"e.g., 18-ton truck" },
+      { id: "inchargeName", label: "In-Charge Person Name", placeholder:"Enter name" },
+      { id: "inchargeContact", label: "In-Charge Person Contact", placeholder:"Enter mobile number" },
+      { id: "radioCall", label: "Radio Call Sign", placeholder:"Enter radio call sign" },
+      { id: "hasDMS", label: "Has Valid DMS? (yes/no)", placeholder:"yes or no" },
+      { id: "permissionName", label: "Permission Given By (if no DMS)", placeholder:"Enter name if no DMS" }
+    ],
+    template:(d,date)=>{let t=d.hasDMS.toLowerCase()==="yes"?"with valid DMS":`without valid DMS with the permission of ${d.permissionName}`;return `Date :- ${date}
+Location :- ${d.location}
+Subject :- Vehicle Access
+
+Description:-
+Granted access to one ${d.vehicleType} belonging to ${d.company} heading towards ${d.purpose} ${t} and escorted by flagman.
+
+Driver Details :-
+Name :- ${d.driverName}
+Contact :- ${d.driverContact}
+VRN :- ${d.vrn}
+Vehicle Type :- ${d.vehicleType}
+Company :- ${d.company}
+In-Charge :- ${d.inchargeName}
+In-Charge Contact :- ${d.inchargeContact}
+
+Regards.
+${d.radioCall}`;}
+  },
+
+  contractorActivity: {
+    fields:[
+      {id:"location",label:"Location", placeholder:"Type exact location"},
+      {id:"activityType",label:"Activity Type", placeholder:"e.g., Landscape Maintenance"},
+      {id:"nature",label:"Nature of Work", placeholder:"Detailed description"},
+      {id:"company",label:"Company Name", placeholder:"Enter company name"},
+      {id:"inchargeName",label:"In-Charge Name", placeholder:"Enter name"},
+      {id:"inchargeContact",label:"In-Charge Contact", placeholder:"Enter mobile number"},
+      {id:"radioCall",label:"Radio Call Sign", placeholder:"Enter radio call sign"},
+      {id:"hasPTW",label:"Has Valid PTW? (yes/no)", placeholder:"yes or no"},
+      {id:"permissionName",label:"Permission Given By (if no PTW)", placeholder:"Enter name if no PTW"}
+    ],
+    template:(d,date)=>{let t=d.hasPTW.toLowerCase()==="yes"?"with a valid work permit (PTW)":`without a valid PTW with the permission of ${d.permissionName}`;return`FYI
+
+Date: ${date}
+Location: ${d.location}
+Subject: ${d.activityType}
+
+Details:-
+Kindly be informed that the ${d.company} contractor is carrying out ${d.nature}. The activity is ${t}.
+
+In-Charge Details:
+Name: ${d.inchargeName}
+Contact: ${d.inchargeContact}
+
+Regards,
+${d.radioCall}`;}
+  },
+
+  fireAlarm:{
+    fields:[
+      {id:"location",label:"Location", placeholder:"Type exact location"},
+      {id:"activatedTime",label:"Activated Time", placeholder:"HH:MM:SS"},
+      {id:"ackTime",label:"Acknowledged Time", placeholder:"HH:MM:SS"},
+      {id:"silenceTime",label:"Silence Time", placeholder:"HH:MM:SS"},
+      {id:"resetTime",label:"Reset Time", placeholder:"HH:MM:SS"},
+      {id:"alarmLocation",label:"Fire Alarm Location", placeholder:"Exact location of alarm"},
+      {id:"nature",label:"Nature of Fire Alarm", placeholder:"e.g., False Alarm"},
+      {id:"cause",label:"Cause of Fire Alarm", placeholder:"Detailed reason"},
+      {id:"responderName",label:"Responder Name", placeholder:"Enter name"},
+      {id:"responderContact",label:"Responder Contact", placeholder:"Enter contact number"},
+      {id:"responderCompany",label:"Responder Company", placeholder:"Enter company name"},
+      {id:"arrivalTime",label:"Responder Arrival Time", placeholder:"HH:MM:SS"},
+      {id:"remarks",label:"Remarks", placeholder:"Enter remarks"},
+      {id:"radioCall",label:"Radio Call Sign", placeholder:"Enter radio call sign"}
+    ],
+    template:(d,date)=>`*FIRE ALARM REPORT 🚨*
+
+FYI Team
+
+Date: ${date}
+Location: ${d.location}
+
+ACTIVATED TIME: ${d.activatedTime}
+ACK TIME: ${d.ackTime}
+SILENCE TIME: ${d.silenceTime}
+RESETED TIME: ${d.resetTime}
+
+Fire Alarm Location: ${d.alarmLocation}
+
+Nature of Fire Alarm: ${d.nature}
+
+Cause of Fire Alarm:
+${d.cause}
+
+RESPONDER DETAILS:-
+Name: ${d.responderName}
+Contact: ${d.responderContact}
+Company: ${d.responderCompany}
+Arrival Time: ${d.arrivalTime}
+
+Remarks: ${d.remarks}
+
+Regards
+${d.radioCall}`
+  }
+  // Add other reports similarly...
+};
+
+/* ==== Script ==== */
+const reportType=document.getElementById("reportType");
+const formArea=document.getElementById("formArea");
+const generateBtn=document.getElementById("generateBtn");
+const output=document.getElementById("output");
+const copyBtn=document.getElementById("copyBtn");
+
+reportType.addEventListener("change",function(){
+  const selected=this.value;
+  formArea.innerHTML="";
+  output.value="";
+  generateBtn.style.display=selected?"block":"none";
+  if(!selected) return;
+  const r=reports[selected];
+  r.fields.forEach(f=>{
+    const label=document.createElement("label");
+    label.textContent=f.label;
+    const input=document.createElement("input");
+    input.id=f.id;
+    input.placeholder=f.placeholder || "";
+    formArea.appendChild(label);
+    formArea.appendChild(input);
+  });
+});
+
+generateBtn.addEventListener("click",function(){
+  const selected=reportType.value;
+  if(!selected) return;
+  const r=reports[selected];
+  const data={};
+  r.fields.forEach(f=>{const el=document.getElementById(f.id);data[f.id]=el.value||"";});
+  const today=new Date();
+  const date=today.toLocaleDateString('en-GB');
+  output.value=r.template(data,date).trim();
+});
+
+copyBtn.addEventListener("click",function(){
+  output.select();
+  document.execCommand("copy");
+  alert("Report copied successfully!");
+});
+</script>
+</body>
+</html>
